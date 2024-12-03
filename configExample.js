@@ -24,12 +24,23 @@ const hostContainsKey = [
     {id: 1, name: 'Homepage', url: 'https://example.org', keyword: 'mobile'},
 ]
 
+const enableDiscord = false; // Enable Discord notifications for downtime
+const discordWebhook = 'https://discord.com/api/webhooks/1234567890/abcdefghijklmnopqrstuvwxyz'; // Discord webhook URL
+const funnyMessages = false // Enable funny messages for downtime
+const pingGroup = false // ping a group on discord - if true, set the group ID below. only works if enableDiscord is true
+const groupID = '12345XXXX' // Group ID for ping me
+
 // Export all config - do not modify!
 const secrets = {
     hosts,
     hostPorts,
     hostWebResponse,
     hostContainsKey,
-    pingInterval
+    pingInterval,
+    enableDiscord,
+    discordWebhook,
+    funnyMessages,
+    pingGroup,
+    groupID
 };
 module.exports = secrets;
