@@ -4,7 +4,8 @@
   "description": "API for monitoring status data on different services",
   "main": "index.js",
   "scripts": {
-    "test": "echo \"Error: no test specified\" && exit 1"
+    "test": "echo \"Error: no test specified\" && exit 1",
+    "start": "node index.js"
   },
   "author": "Vincent Wackler",
   "license": "ISC",
@@ -16,5 +17,8 @@
     "node-cron": "^3.0.3",
     "ping": "^0.4.4",
     "sqlite3": "^5.1.7"
+  },
+  "engines": {
+    "node": "20.x"
   }
 }
