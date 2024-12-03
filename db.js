@@ -77,24 +77,36 @@ function saveUptime(data) {
         }
 
         if (row) {
-            const newOnlineSince = status === 'online' && row.status !== 'online' ? 'CURRENT_TIMESTAMP' : row.online_since;
-
+            const newOnlineSince = status === 'online' && row.status !== 'online' ? 'datetime("now")' : row.online_since;
+        
             const updateQuery = `
                 UPDATE ${table}
-                SET status = ?, last_status = ?, online_since = COALESCE(${newOnlineSince}, online_since), last_checked = CURRENT_TIMESTAMP
+                SET 
+                    status = ?, 
+                    last_status = ?, 
+                    online_since = CASE 
+                        WHEN ? = 'online' AND status != 'online' THEN datetime('now') 
+                        ELSE online_since 
+                    END, 
+                    last_checked = datetime('now')
                 WHERE id = ?
             `;
-            db.run(updateQuery, [status, row.status, id]);
+            db.run(updateQuery, [status, row.status, status, id], (err) => {
+                if (err) console.error('Error updating record:', err);
+            });
         } else {
             const fields = additionalField
                 ? '(id, display_name, url, ' + additionalField + ', status, last_status, online_since)'
                 : '(id, display_name, url, status, last_status, online_since)';
             const placeholders = additionalField ? '?, ?, ?, ?, ?, ?, ?' : '?, ?, ?, ?, ?, ?';
-            const insertQuery = `INSERT INTO ${table} ${fields} VALUES (${placeholders})`;
+            const insertQuery = `
+                INSERT INTO ${table} ${fields}
+                VALUES (${placeholders})
+            `;
 
             const params = additionalField
                 ? [id, displayName, url, data[additionalField], status, status, status === 'online' ? new Date().toISOString() : null]
-                : [id, displayName, url, status, status, status === 'online' ? new Date().toISOString() : null];
+                : [id, displayName, url, status, status, status === 'online' ? "datetime('now')" : null];
 
             db.run(insertQuery, params);
         }
